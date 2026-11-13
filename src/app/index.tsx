@@ -1,98 +1,190 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from "expo-router";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+const COLORS = {
+  background: "#FFF9F0",
+  primary: "#087F8C",
+  primaryDark: "#075E68",
+  text: "#24343B",
+  secondary: "#74838A",
+  white: "#FFFFFF",
+};
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+export default function WelcomeScreen() {
+  const router = useRouter();
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <SafeAreaView style={styles.container}>
+      <View style={styles.content}>
+        {/* Brand */}
+        <View style={styles.brand}>
+          <View style={styles.mascotCircle}>
+            <Text style={styles.mascot}>🦁</Text>
+          </View>
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+          <Text style={styles.logo}>Révision</Text>
+          <Text style={styles.tagline}>Apprendre. Mémoriser. Réussir.</Text>
+        </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+        {/* Introduction */}
+        <View style={styles.hero}>
+          <Text style={styles.heading}>
+            Apprends tes leçons,{"\n"}
+            <Text style={styles.highlight}>à ton rythme !</Text>
+          </Text>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+          <Text style={styles.description}>
+            Découvre une nouvelle façon d'apprendre, de mémoriser tes leçons et
+            de progresser chaque jour.
+          </Text>
+        </View>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+        {/* Actions */}
+        <View style={styles.actions}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.primaryButton,
+              pressed && styles.pressed,
+            ]}
+            onPress={() => router.push("/(auth)/register")}
+          >
+            <Text style={styles.primaryButtonText}>Créer un compte</Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.secondaryButton}
+            onPress={() => router.push("/(auth)/login")}
+          >
+            <Text style={styles.secondaryButtonText}>J'ai déjà un compte</Text>
+          </Pressable>
+        </View>
+
+        {/* Footer */}
+        <Text style={styles.footer}>
+          Chaque leçon apprise est une victoire ! ✨
+        </Text>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    backgroundColor: COLORS.background,
   },
-  safeArea: {
+
+  content: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    paddingHorizontal: 28,
+    paddingVertical: 24,
+    justifyContent: "space-between",
+    alignItems: "center",
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+
+  brand: {
+    alignItems: "center",
+    marginTop: 25,
   },
-  title: {
-    textAlign: 'center',
+
+  mascotCircle: {
+    width: 112,
+    height: 112,
+    borderRadius: 56,
+    backgroundColor: "#E1F5F3",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 12,
   },
-  code: {
-    textTransform: 'uppercase',
+
+  mascot: {
+    fontSize: 65,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+
+  logo: {
+    fontSize: 34,
+    fontWeight: "800",
+    color: COLORS.primaryDark,
+    letterSpacing: -1,
+  },
+
+  tagline: {
+    fontSize: 13,
+    color: COLORS.secondary,
+    marginTop: 5,
+    letterSpacing: 0.5,
+  },
+
+  hero: {
+    alignItems: "center",
+    paddingHorizontal: 5,
+  },
+
+  heading: {
+    fontSize: 32,
+    fontWeight: "800",
+    color: COLORS.text,
+    textAlign: "center",
+    lineHeight: 41,
+  },
+
+  highlight: {
+    color: COLORS.primary,
+  },
+
+  description: {
+    fontSize: 16,
+    color: COLORS.secondary,
+    textAlign: "center",
+    lineHeight: 25,
+    marginTop: 18,
+    maxWidth: 310,
+  },
+
+  actions: {
+    width: "100%",
+    gap: 14,
+  },
+
+  primaryButton: {
+    backgroundColor: COLORS.primary,
+    height: 58,
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  primaryButtonText: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontWeight: "700",
+  },
+
+  secondaryButton: {
+    height: 58,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: COLORS.primary,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "transparent",
+  },
+
+  secondaryButtonText: {
+    color: COLORS.primaryDark,
+    fontSize: 16,
+    fontWeight: "700",
+  },
+
+  pressed: {
+    opacity: 0.8,
+  },
+
+  footer: {
+    fontSize: 12,
+    color: COLORS.secondary,
+    textAlign: "center",
+    marginTop: 12,
   },
 });
